@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import * as admin from 'firebase-admin';
-import { FirebaseApp } from '@firebase/app-types';
+import * as database from 'firebase-admin/database';
+import { FirebaseBaseService } from './firebase-admin-base.service';
 
 @Injectable()
-export class FirebaseDatabaseService implements admin.database.Database {
-  app: FirebaseApp;
-  constructor(public readonly _app: admin.app.App) {}
-
+export class FirebaseDatabaseService extends FirebaseBaseService {
   get database() {
-    if (!this._app) {
+    if (!this.app) {
       throw new Error('Firebase instance is undefined.');
     }
-    return this._app.database();
+    return database.getDatabase(this.app);
   }
 
   goOffline(): void {
@@ -20,10 +17,10 @@ export class FirebaseDatabaseService implements admin.database.Database {
   goOnline(): void {
     return this.database.goOnline();
   }
-  ref(path?: string | admin.database.Reference): admin.database.Reference {
+  ref(path?: string | database.Reference): database.Reference {
     return this.database.ref(path);
   }
-  refFromURL(url: string): admin.database.Reference {
+  refFromURL(url: string): database.Reference {
     return this.database.refFromURL(url);
   }
   getRules(): Promise<string> {

@@ -1,5 +1,5 @@
 import { Global, Module, DynamicModule, Provider } from '@nestjs/common';
-import * as admin from 'firebase-admin';
+import { getApps, initializeApp, App } from 'firebase-admin/app';
 import { FirebaseAdminModuleAsyncOptions, FirebaseAdminModuleOptions } from './firebase-admin.interface';
 import { FIREBASE_ADMIN_MODULE_OPTIONS } from './firebase-admin.constant';
 import {
@@ -25,12 +25,12 @@ const EXPORTS = [...PROVIDERS];
 @Module({})
 export class FirebaseAdminCoreModule {
   static forRoot(options: FirebaseAdminModuleOptions): DynamicModule {
-    const firebaseAdminModuleOptions = {
+    const firebaseAdminModuleOptions: Provider = {
       provide: FIREBASE_ADMIN_MODULE_OPTIONS,
       useValue: options,
     };
 
-    const app = admin.apps.length === 0 ? admin.initializeApp(options) : admin.apps[0];
+    const app = getApps()[0] ?? initializeApp(options);
 
     const providers = this.createProviders(app);
 
@@ -41,7 +41,7 @@ export class FirebaseAdminCoreModule {
     };
   }
 
-  private static createProviders(app: admin.app.App): Provider<any>[] {
+  private static createProviders(app: App): Provider[] {
     return PROVIDERS.map<Provider>((ProviderService) => ({
       provide: ProviderService,
       useFactory: () => new ProviderService(app),
@@ -49,7 +49,7 @@ export class FirebaseAdminCoreModule {
   }
 
   static forRootAsync(options: FirebaseAdminModuleAsyncOptions): DynamicModule {
-    const firebaseAdminModuleOptions = {
+    const firebaseAdminModuleOptions: Provider = {
       provide: FIREBASE_ADMIN_MODULE_OPTIONS,
       useFactory: options.useFactory,
       inject: options.inject || [],
@@ -69,7 +69,7 @@ export class FirebaseAdminCoreModule {
     return PROVIDERS.map<Provider>((ProviderService) => ({
       provide: ProviderService,
       useFactory: (options: FirebaseAdminModuleOptions) => {
-        const app = admin.apps.length === 0 ? admin.initializeApp(options) : admin.apps[0];
+        const app = getApps()[0] ?? initializeApp(options);
         return new ProviderService(app);
       },
       inject: [FIREBASE_ADMIN_MODULE_OPTIONS],

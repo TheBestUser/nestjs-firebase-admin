@@ -51,10 +51,11 @@ export class AppService {
 
 ## Compatibility Table
 
-| firebase-admin    | NestJS Library |
-| ----------------- |----------------|
-| `9.xx`            | `master`       |
-| `8.xx`            | `1.xx`         |
+| firebase-admin | NestJS Library   |
+|----------------|------------------|
+| `11.xx`        | `3.xx`, `master` |
+| `9.xx`         | `2.xx`           |
+| `8.xx`         | `1.xx`           |
 
 ## License
 
