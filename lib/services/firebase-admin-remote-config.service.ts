@@ -1,47 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import * as admin from 'firebase-admin';
+import * as remoteConfig from 'firebase-admin/remote-config';
+import { FirebaseBaseService } from './firebase-admin-base.service';
 
 @Injectable()
-export class FirebaseRemoteConfigService implements admin.remoteConfig.RemoteConfig {
-  constructor(public readonly app: admin.app.App) {}
-
+export class FirebaseRemoteConfigService extends FirebaseBaseService {
   get remoteConfig() {
     if (!this.app) {
       throw new Error('Firebase instance is undefined.');
     }
-    return this.app.remoteConfig();
+    return remoteConfig.getRemoteConfig(this.app);
   }
 
-  getTemplate(): Promise<admin.remoteConfig.RemoteConfigTemplate> {
+  getTemplate(): Promise<remoteConfig.RemoteConfigTemplate> {
     return this.remoteConfig.getTemplate();
   }
 
-  getTemplateAtVersion(versionNumber: number | string): Promise<admin.remoteConfig.RemoteConfigTemplate> {
+  getTemplateAtVersion(versionNumber: number | string): Promise<remoteConfig.RemoteConfigTemplate> {
     return this.remoteConfig.getTemplateAtVersion(versionNumber);
   }
 
-  validateTemplate(
-    template: admin.remoteConfig.RemoteConfigTemplate,
-  ): Promise<admin.remoteConfig.RemoteConfigTemplate> {
+  validateTemplate(template: remoteConfig.RemoteConfigTemplate): Promise<remoteConfig.RemoteConfigTemplate> {
     return this.remoteConfig.validateTemplate(template);
   }
 
   publishTemplate(
-    template: admin.remoteConfig.RemoteConfigTemplate,
+    template: remoteConfig.RemoteConfigTemplate,
     options?: { force: boolean },
-  ): Promise<admin.remoteConfig.RemoteConfigTemplate> {
+  ): Promise<remoteConfig.RemoteConfigTemplate> {
     return this.remoteConfig.publishTemplate(template, options);
   }
 
-  createTemplateFromJSON(json: string): admin.remoteConfig.RemoteConfigTemplate {
+  createTemplateFromJSON(json: string): remoteConfig.RemoteConfigTemplate {
     return this.remoteConfig.createTemplateFromJSON(json);
   }
 
-  rollback(versionNumber: string | number): Promise<admin.remoteConfig.RemoteConfigTemplate> {
+  rollback(versionNumber: string | number): Promise<remoteConfig.RemoteConfigTemplate> {
     return this.remoteConfig.rollback(versionNumber);
   }
 
-  listVersions(options?: admin.remoteConfig.ListVersionsOptions): Promise<admin.remoteConfig.ListVersionsResult> {
+  listVersions(options?: remoteConfig.ListVersionsOptions): Promise<remoteConfig.ListVersionsResult> {
     return this.remoteConfig.listVersions(options);
   }
 }

@@ -1,54 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import * as admin from 'firebase-admin';
+import * as auth from 'firebase-admin/auth';
+import { FirebaseBaseService } from './firebase-admin-base.service';
 
 @Injectable()
-export class FirebaseAuthenticationService implements admin.auth.Auth {
-  constructor(public readonly app: admin.app.App) {}
-
+export class FirebaseAuthenticationService extends FirebaseBaseService {
   get auth() {
     if (!this.app) {
       throw new Error('Firebase instance is undefined.');
     }
-    return this.app.auth();
+    return auth.getAuth(this.app);
   }
 
-  tenantManager(): admin.auth.TenantManager {
+  tenantManager(): auth.TenantManager {
     return this.auth.tenantManager();
   }
   createCustomToken(uid: string, developerClaims?: Object): Promise<string> {
     return this.auth.createCustomToken(uid, developerClaims);
   }
-  createUser(properties: admin.auth.CreateRequest): Promise<admin.auth.UserRecord> {
+  createUser(properties: auth.CreateRequest): Promise<auth.UserRecord> {
     return this.auth.createUser(properties);
   }
   deleteUser(uid: string): Promise<void> {
     return this.auth.deleteUser(uid);
   }
-  deleteUsers(uids: string[]): Promise<admin.auth.DeleteUsersResult> {
+  deleteUsers(uids: string[]): Promise<auth.DeleteUsersResult> {
     return this.auth.deleteUsers(uids);
   }
-  getUser(uid: string): Promise<admin.auth.UserRecord> {
+  getUser(uid: string): Promise<auth.UserRecord> {
     return this.auth.getUser(uid);
   }
-  getUserByEmail(email: string): Promise<admin.auth.UserRecord> {
+  getUserByEmail(email: string): Promise<auth.UserRecord> {
     return this.auth.getUserByEmail(email);
   }
-  getUserByPhoneNumber(phoneNumber: string): Promise<admin.auth.UserRecord> {
+  getUserByPhoneNumber(phoneNumber: string): Promise<auth.UserRecord> {
     return this.auth.getUserByPhoneNumber(phoneNumber);
   }
-  getUserByProviderUid(providerId: string, uid: string): Promise<admin.auth.UserRecord> {
+  getUserByProviderUid(providerId: string, uid: string): Promise<auth.UserRecord> {
     return this.auth.getUserByProviderUid(providerId, uid);
   }
-  getUsers(identifiers: admin.auth.UserRecord[]): Promise<admin.auth.GetUsersResult> {
+  getUsers(identifiers: auth.UserRecord[]): Promise<auth.GetUsersResult> {
     return this.auth.getUsers(identifiers);
   }
-  listUsers(maxResults?: number, pageToken?: string): Promise<admin.auth.ListUsersResult> {
+  listUsers(maxResults?: number, pageToken?: string): Promise<auth.ListUsersResult> {
     return this.auth.listUsers(maxResults, pageToken);
   }
-  updateUser(uid: string, properties: admin.auth.UpdateRequest): Promise<admin.auth.UserRecord> {
+  updateUser(uid: string, properties: auth.UpdateRequest): Promise<auth.UserRecord> {
     return this.auth.updateUser(uid, properties);
   }
-  verifyIdToken(idToken: string, checkRevoked?: boolean): Promise<admin.auth.DecodedIdToken> {
+  verifyIdToken(idToken: string, checkRevoked?: boolean): Promise<auth.DecodedIdToken> {
     return this.auth.verifyIdToken(idToken, checkRevoked);
   }
   setCustomUserClaims(uid: string, customUserClaims: Object): Promise<void> {
@@ -57,31 +56,28 @@ export class FirebaseAuthenticationService implements admin.auth.Auth {
   revokeRefreshTokens(uid: string): Promise<void> {
     return this.auth.revokeRefreshTokens(uid);
   }
-  importUsers(
-    users: admin.auth.UserImportRecord[],
-    options?: admin.auth.UserImportOptions,
-  ): Promise<admin.auth.UserImportResult> {
+  importUsers(users: auth.UserImportRecord[], options?: auth.UserImportOptions): Promise<auth.UserImportResult> {
     return this.auth.importUsers(users, options);
   }
-  createSessionCookie(idToken: string, sessionCookieOptions: admin.auth.SessionCookieOptions): Promise<string> {
+  createSessionCookie(idToken: string, sessionCookieOptions: auth.SessionCookieOptions): Promise<string> {
     return this.auth.createSessionCookie(idToken, sessionCookieOptions);
   }
-  verifySessionCookie(sessionCookie: string, checkForRevocation?: boolean): Promise<admin.auth.DecodedIdToken> {
+  verifySessionCookie(sessionCookie: string, checkForRevocation?: boolean): Promise<auth.DecodedIdToken> {
     return this.auth.verifySessionCookie(sessionCookie, checkForRevocation);
   }
-  generatePasswordResetLink(email: string, actionCodeSettings?: admin.auth.ActionCodeSettings): Promise<string> {
+  generatePasswordResetLink(email: string, actionCodeSettings?: auth.ActionCodeSettings): Promise<string> {
     return this.auth.generatePasswordResetLink(email, actionCodeSettings);
   }
-  generateEmailVerificationLink(email: string, actionCodeSettings?: admin.auth.ActionCodeSettings): Promise<string> {
+  generateEmailVerificationLink(email: string, actionCodeSettings?: auth.ActionCodeSettings): Promise<string> {
     return this.auth.generateEmailVerificationLink(email, actionCodeSettings);
   }
-  generateSignInWithEmailLink(email: string, actionCodeSettings: admin.auth.ActionCodeSettings): Promise<string> {
+  generateSignInWithEmailLink(email: string, actionCodeSettings: auth.ActionCodeSettings): Promise<string> {
     return this.auth.generateSignInWithEmailLink(email, actionCodeSettings);
   }
-  listProviderConfigs(options: admin.auth.AuthProviderConfigFilter): Promise<admin.auth.ListProviderConfigResults> {
+  listProviderConfigs(options: auth.AuthProviderConfigFilter): Promise<auth.ListProviderConfigResults> {
     return this.auth.listProviderConfigs(options);
   }
-  getProviderConfig(providerId: string): Promise<admin.auth.AuthProviderConfig> {
+  getProviderConfig(providerId: string): Promise<auth.AuthProviderConfig> {
     return this.auth.getProviderConfig(providerId);
   }
   deleteProviderConfig(providerId: string): Promise<void> {
@@ -89,11 +85,11 @@ export class FirebaseAuthenticationService implements admin.auth.Auth {
   }
   updateProviderConfig(
     providerId: string,
-    updatedConfig: admin.auth.UpdateAuthProviderRequest,
-  ): Promise<admin.auth.AuthProviderConfig> {
+    updatedConfig: auth.UpdateAuthProviderRequest,
+  ): Promise<auth.AuthProviderConfig> {
     return this.auth.updateProviderConfig(providerId, updatedConfig);
   }
-  createProviderConfig(config: admin.auth.AuthProviderConfig): Promise<admin.auth.AuthProviderConfig> {
+  createProviderConfig(config: auth.AuthProviderConfig): Promise<auth.AuthProviderConfig> {
     return this.auth.createProviderConfig(config);
   }
 }

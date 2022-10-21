@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import * as admin from 'firebase-admin';
+import * as storage from 'firebase-admin/storage';
 import { Bucket } from '@google-cloud/storage';
+import { FirebaseBaseService } from './firebase-admin-base.service';
 
 @Injectable()
-export class FirebaseStorageService implements admin.storage.Storage {
-  constructor(public readonly app: admin.app.App) {}
-
+export class FirebaseStorageService extends FirebaseBaseService {
   get storage() {
     if (!this.app) {
       throw new Error('Firebase instance is undefined.');
     }
-    return this.app.storage();
+    return storage.getStorage(this.app);
   }
 
   bucket(name?: string): Bucket {
